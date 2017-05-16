@@ -6,8 +6,6 @@ import javax.swing.GroupLayout;
 import java.awt.Container;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.EventQueue;
 
 public class Twenty48 extends JFrame{
@@ -17,7 +15,6 @@ public class Twenty48 extends JFrame{
 	 */
 	private static final long serialVersionUID = 8506717210030744211L;
 	private Board gameBoard;
-	private ControlBar gameControl;
 	
 	public Twenty48() {//constrctor
 		
@@ -29,16 +26,17 @@ public class Twenty48 extends JFrame{
 		
 		/*initialize the game components*/
 		gameBoard = new Board();
-		gameControl = new ControlBar();
 		
 		/*place the board and buttons on the game frame*/
 		placeGameComponents();
-		setUpButtons();
+		//setUpButtons();
 		
 		/*size the game board and set up location and close operation*/
-		setSize(800,600);
+		setSize(550,600);
+		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
+		this.addKeyListener(new KeyStrokeListener());
 	}
 	
 	private void placeGameComponents() {//place the components into the frame
@@ -53,43 +51,19 @@ public class Twenty48 extends JFrame{
 		layout.setAutoCreateContainerGaps(true);
 		layout.setAutoCreateGaps(true);
 		
-		hGroup.addGroup(layout.createParallelGroup().addComponent(gameBoard).addComponent(gameControl));
+		hGroup.addGroup(layout.createParallelGroup().addComponent(gameBoard));
 		vGroup.addGroup(layout.createParallelGroup().addComponent(gameBoard));
-		vGroup.addGroup(layout.createParallelGroup().addComponent(gameControl));
 		
 		layout.setHorizontalGroup(hGroup);
 		layout.setVerticalGroup(vGroup);
 	}
 	
-	private void setUpButtons() {
-		
-		//set action commands
-		gameControl.upButton.setActionCommand("UP");
-		gameControl.downButton.setActionCommand("DOWN");
-		gameControl.leftButton.setActionCommand("LEFT");
-		gameControl.rightButton.setActionCommand("RIGHT");
-		
-		//add event listeners
-		gameControl.upButton.addActionListener(new ButtonActionListener());
-		gameControl.downButton.addActionListener(new ButtonActionListener());
-		gameControl.leftButton.addActionListener(new ButtonActionListener());
-		gameControl.rightButton.addActionListener(new ButtonActionListener());
-		
-		//add key listeners
-		gameControl.upButton.addKeyListener(new KeyStrokeListener());
-		gameControl.downButton.addKeyListener(new KeyStrokeListener());
-		gameControl.leftButton.addKeyListener(new KeyStrokeListener());
-		gameControl.rightButton.addKeyListener(new KeyStrokeListener());
+	public boolean checkWin() {
+		return gameBoard.checkWin();
 	}
 	
-	/*action listener for buttons*/
-	private class ButtonActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			gameBoard.move(e.getActionCommand());
-		}
-		
+	public boolean checkLost() {
+		return gameBoard.checklost();
 	}
 	
 	/*key listener for buttons*/
@@ -97,10 +71,11 @@ public class Twenty48 extends JFrame{
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if(e.getKeyCode() == KeyEvent.VK_UP) gameBoard.move("UP");
-			else if(e.getKeyCode() == KeyEvent.VK_LEFT) gameBoard.move("LEFT");
-			else if(e.getKeyCode() == KeyEvent.VK_RIGHT) gameBoard.move("RIGHT");
-			else if(e.getKeyCode() == KeyEvent.VK_DOWN) gameBoard.move("DOWN");
+			if(e.getKeyCode() == KeyEvent.VK_UP) gameBoard.gameInput("UP");
+			else if(e.getKeyCode() == KeyEvent.VK_LEFT) gameBoard.gameInput("LEFT");
+			else if(e.getKeyCode() == KeyEvent.VK_RIGHT) gameBoard.gameInput("RIGHT");
+			else if(e.getKeyCode() == KeyEvent.VK_DOWN) gameBoard.gameInput("DOWN");
+			else if(e.getKeyCode() == KeyEvent.VK_ENTER) gameBoard.gameInput("ENTER");
 		}
 
 		@Override

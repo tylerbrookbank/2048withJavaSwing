@@ -17,6 +17,7 @@ public class Cell extends JPanel {
 	private static final long serialVersionUID = -604701939078884883L;
 	private int value;//holds value of the cell
 	private JLabel label;//holds the label on the cell
+	private boolean canCombine;//chcek to see if current cell is able to combine
 	
 	public Cell() {//default constructor
 		
@@ -24,6 +25,7 @@ public class Cell extends JPanel {
 		label = new JLabel("");//the default label is empty
 		setColor(0);//set default color
 		add(label);
+		canCombine = true;
 		
 	}
 	
@@ -32,7 +34,7 @@ public class Cell extends JPanel {
 		label = new JLabel("");
 		setValue(num);
 		add(label);
-		
+		canCombine = true;
 	}
 	
 	/*This method is called to reset the cell back to defaults*/
@@ -40,6 +42,14 @@ public class Cell extends JPanel {
 		value = 0;
 		setColor(value);
 		label.setText("");
+	}
+	
+	public void resetCanCombine(){
+		canCombine = true;
+	}
+	
+	public boolean canCombine() {
+		return canCombine;
 	}
 	
 	public int getValue() {
@@ -60,8 +70,24 @@ public class Cell extends JPanel {
 			return 1;
 		}
 		
-		if(value!=0) label.setText(""+value);//set Text to the value
-		else label.setText("");
+		if(value>0) label.setText(""+value);//set Text to the value
+		else if(value==0) label.setText("");
+		
+		return 0;
+	}
+	
+	public int setValue(int num1, int num2) {
+		value = num1 + num2;
+		
+		if( setColor(value)==1 ) {//set color and check if value is a valid number
+			System.out.println(value+"is not a valid value for a cell.");
+			return 1;
+		}
+		
+		if(value>0) label.setText(""+value);//set Text to the value
+		else if(value==0) label.setText("");//
+		
+		canCombine = false;//flip canCombine to false so that this cell
 		
 		return 0;
 	}
@@ -104,6 +130,18 @@ public class Cell extends JPanel {
 			setBackground(new Color(172, 180, 222));
 			break;
 		case 2048://2048 cell color
+			setBackground(new Color(104, 64, 112));
+			break;
+		case -1://game start/game lost
+			setBackground(new Color(217, 217, 217));
+			break;
+		case -2://game start/game lost
+			setBackground(new Color(217, 217, 217));
+			break;
+		case -3://game won, non winning block
+			setBackground(new Color(168, 112, 210));
+			break;
+		case -4://game won, winning block
 			setBackground(new Color(104, 64, 112));
 			break;
 		default://wrong value was passed to method
